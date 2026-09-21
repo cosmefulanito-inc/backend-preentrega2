@@ -1,0 +1,1 @@
+Estructura general para la implementación del backend de una app de reserva de turnos. No incluye aún rutas con Express
