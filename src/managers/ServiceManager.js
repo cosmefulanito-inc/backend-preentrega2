@@ -2,25 +2,25 @@
 import { promises as fs } from "node:fs"
 import { randomUUID } from "node:crypto"
 
-const path = "./src/data/services.json"
+const DEFAULT_PATH = "./src/data/services.json"
 
 // Leer todos los servicios de data
-export async function getServices(path) {
+export async function getServices(path = DEFAULT_PATH) {
   const content = await fs.readFile(path, "utf-8")
 
   return JSON.parse(content)
 }
 
 // Buscar servicio por ID
-export async function getServiceById(path, id) {
-  const services = await getServices(path)
+export async function getServiceById(id) {
+  const services = await getServices()
   const found = services.find(service => service.id === id)
   return found ?? null // Si el resultado de la búsqueda es null o undefined, se procesa como null
 }
 
 // Agregar nuevo servicio
-export async function addService(path, serviceData) {
-  const services = await getServices(path)
+export async function addService(serviceData) {
+  const services = await getServices()
 
   const newService = {
     id: randomUUID(),
@@ -34,7 +34,7 @@ export async function addService(path, serviceData) {
   services.push(newService)
 
   await fs.writeFile(
-    path,
+    DEFAULT_PATH,
     JSON.stringify(services, null, 2)
   )
 
@@ -42,8 +42,8 @@ export async function addService(path, serviceData) {
 }
 
 // Actualizar servicio
-export async function updateService(path, id, changes) {
-  const services = await getServices(path)
+export async function updateService(id, changes) {
+  const services = await getServices(DEFAULT_PATH)
 
   // Busca el servicio en cuestión y recupera su índice
   const serviceIndex = services.findIndex(
@@ -64,7 +64,7 @@ export async function updateService(path, id, changes) {
 
   // Guardar cambios en el JSON de services
   await fs.writeFile(
-    path,
+    DEFAULT_PATH,
     JSON.stringify(services, null, 2)
   )
 
@@ -72,8 +72,8 @@ export async function updateService(path, id, changes) {
 }
 
 // Eliminar un servicio
-export async function deleteService(path, id) {
-  const services = await getServices(path)
+export async function deleteService(id) {
+  const services = await getServices(DEFAULT_PATH)
 
   // Asigno a una variable todos los registros del JSON, excepto aquel que coincide con el ID del que quiero borrar
   const filteredServices = services.filter(
@@ -87,7 +87,7 @@ export async function deleteService(path, id) {
 
   // Sobreescribo en el JSON los datos filtrados; o sea, sin el registro eliminado
   await fs.writeFile(
-    path,
+    DEFAULT_PATH,
     JSON.stringify(filteredServices, null, 2)
   )
 

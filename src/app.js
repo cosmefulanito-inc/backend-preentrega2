@@ -1,14 +1,11 @@
-import { PORT, NODE_ENV } from "./config/env.config.js";
-import { getServices } from "./managers/ServiceManager.js";
+import express from "express"
+import servicesRouter from "./routes/services.router.js"
 
-const path = "./src/data/services.json"
 
-async function main() {
-  console.log("Entorno:", NODE_ENV)
-  console.log("Puerto:", PORT)
+const app = express()
 
-  const services = await getServices(path)
-  console.log("Servicios cargados:", services)
-}
+app.use(express.json())
 
-main()
+app.use("/api/services", servicesRouter)
+
+export default app
